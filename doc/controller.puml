@@ -1,0 +1,33 @@
+@startuml
+
+!theme monokai_npp from ..\.styles
+scale 2
+
+
+class Application {
+    +{static}time_gameday_real: int
+    +{static}time_gameday_background: int
+    +{static}updates_per_gameday: int
+    +view: <i>Tk</i> | <i>None</i>
+    +creature: Creature | <i>None</i>
+    +link_view() → <i>None</i>
+    +run() → <i>None</i>
+    +is_live_creature() → <i>bool</i>
+    +load_creature() → <i>tuple</i> [<i>datetime.datetime</i>, Creature]
+    -progress_creature() → Creature
+    +new_creature() → Creature
+    -save_creature() → <i>None</i>
+}
+
+
+class KindLoader {
+    +{static}default_path: <i>Path</i>
+    -{static}get_files() → <i>list</i> [<i>Path</i> ]
+    +{static}load() → <i>list</i> [Kind]
+}
+
+
+Application ..> KindLoader
+
+
+@enduml

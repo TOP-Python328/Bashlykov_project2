@@ -1,0 +1,46 @@
+Kind(
+    'белая мышь',
+    DATA_DIR / 'images/mouse.png',
+    MaturePhase(
+        3,
+        KindParameter(Health.__name__, 10, 0, 25),
+        KindParameter(Satiety.__name__, 2, 0, 15),
+        KindParameter(Thirst.__name__, 3, 0, 10),
+        KindParameter(Tiredness.__name__, 5, 0, 20),
+        KindParameter(Mood.__name__, 5, -10, 10),
+        player_actions=[
+            Feed(10), Give_to_drink(3), PlayPet(), TrainPet(), TeaseHead(), 
+        ],
+        creature_actions=[
+            ChaseTail(0.9), Sleep(0.7), Miss(0.6),
+        ]
+    ),
+    MaturePhase(
+        20,
+        KindParameter(Health.__name__, 0, 0, 60),
+        KindParameter(Satiety.__name__, 0, 0, 40),
+        KindParameter(Thirst.__name__, 7, 0, 20),
+        KindParameter(Tiredness.__name__, 15, 0, 30),
+        KindParameter(Mood.__name__, 0, -5, 7),
+        player_actions=[
+            Feed(25), Give_to_drink(7), PlayPet(), TrainPet(), TeaseHead(),
+        ],
+        creature_actions=[
+            ChaseTail(0.35), Sleep(0.8), Miss(0.7),
+        ]
+    ),
+    MaturePhase(
+        5,
+        KindParameter(Health.__name__, 0, 0, 45),
+        KindParameter(Satiety.__name__, 0, 0, 25),
+        KindParameter(Thirst.__name__, 5, 0, 15),
+        KindParameter(Tiredness.__name__, 20, 0, 40),
+        KindParameter(Mood.__name__, 5, -5, 5),
+        player_actions=[
+            Feed(20), Give_to_drink(10), TeaseHead(), 
+        ],
+        creature_actions=[
+            Sleep(0.9), Miss(0.9),
+        ],
+    ),
+) 

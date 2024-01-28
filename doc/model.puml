@@ -1,0 +1,230 @@
+@startuml
+
+!theme monokai_npp from ..\.styles
+scale 2
+
+
+class Creature << originator >> {
+    +kind: Kind
+    +name: <i>str</i>
+    #age: <i>int</i>
+    +params: <i>dict</i> [<i>Type</i>, CreatureParameter]
+    +player_actions: <i>set</i> [PlayerAction]
+    +creature_actions: <i>set</i> [CreatureAction]
+    +history: History[State]
+    ..<font size=12><i> getters </i></font>..
+    +age → <i>int</i>
+    ..<font size=12><i> setters </i></font>..
+    +age(<i>int</i> )
+    ..<font size=12><i> methods </i></font>..
+    #set_actions() → <i>None</i>
+    +update() → <i>None</i>
+    -grow_up() → <i>None</i>
+    +random_action() → <i>None</i>
+    +save() → State
+}
+
+
+class Kind {
+    {field}<font size=12><font "Brass Mono"> (int, int): MaturePhase </font>
+    --
+    +name: <i>str</i>
+    +max_age: <i>int</i>
+    +image: <i>Path</i>
+    --
+    __init__(<i>Iterable</i> [MaturePhase])
+}
+
+
+class MaturePhase {
+    +days: <i>int</i>
+    +params: <i>set</i> [KindParameter]
+    ' +coeffs: <i>dict</i> [<i>Type</i>, <i>dict</i> [<i>Type</i>, <i>float</i> ]
+    +player_actions: <i>set</i> [PlayerAction]
+    +creature_actions: <i>set</i> [CreatureAction]
+}
+
+
+class KindParameter << dataclass >> {
+    +name: <i>str</i>
+    +initial: <i>float</i>
+    +min: <i>float</i>
+    +max: <i>float</i>
+}
+
+
+enum Parameters << functional >> {
+    Health
+    Satiety
+    ...
+}
+
+
+abstract CreatureParameter << observer >> {
+    +{abstract}{static}name: <i>str</i>
+    #value: <i>float</i>
+    -min: <i>float</i>
+    -max: <i>float</i>
+    +creature: Creature
+    ..<font size=12><i> getters </i></font>..
+    +value → <i>float</i>
+    +range → <i>tuple</i> [<i>float</i>, <i>float</i> ]
+    ..<font size=12><i> setters </i></font>..
+    +value(<i>float</i> )
+    ..<font size=12><i> methods </i></font>..
+    +{abstract}update() → <i>None</i>
+}
+
+class Health {
+    +{static}name: <i>str</i>
+    +update() → <i>None</i>
+}
+class Satiety {
+    +{static}name: <i>str</i>
+    +update() → <i>None</i>
+}
+
+
+' abstract Action {
+    ' +{static}name
+' }
+
+
+abstract Action {
+    +{static}{abstract}name: <i>str</i>
+    +{abstract}creature: Creature = <i>None</i> 
+    +{abstract}do()
+}
+
+
+abstract PlayerAction {
+    +{static}{abstract}image: <i>Path</i>
+}
+
+class Feed {
+    +{static}name: <i>str</i>
+    +{static}image: <i>Path</i>
+    +amount: <i>float</i>
+    +do()
+}
+
+class TeaseHead {
+    +{static}name: <i>str</i>
+    +{static}image: <i>Path</i>
+    +do()
+}
+
+
+abstract CreatureAction {
+    +rand_coeff: <i>float</i>
+}
+
+class ChaseTail {
+    +{static}name: <i>str</i>
+    +do()
+}
+
+
+class NoAction {
+    +{static}name = 'бездействие'
+    +do()
+}
+
+
+class History << caretaker >> {
+    {field}<font size=12><font "Brass Mono"> State </font>
+    +get_param() → <i>list</i> [<i>float</i> ]
+}
+
+class State << memento >> {
+    +age: <i>int</i>
+    +param1: <i>float</i>
+    +param2: <i>float</i>
+    ...
+}
+
+
+abstract DictOfRanges {
+    {field}<font size=12><font "Brass Mono"> (int, int): Any </font>
+    __getitem__()
+    +get_range() → <i>tuple</i> [<i>int</i>, <i>int</i> ]
+}
+abstract list
+abstract dict
+
+
+hide abstract empty members
+hide enum empty members
+hide KindParameter empty members
+hide MaturePhase empty members
+hide State empty members
+
+
+' list <|-- History
+' dict <|-- DictOfRanges
+
+' DictOfRanges <|-- Kind
+
+' Creature o-left- Kind
+' Creature o-right-o CreatureParameter
+' Creature o--o Action
+' Creature o-up- History
+
+
+' Kind *-- MaturePhase
+
+' MaturePhase *-- KindParameter
+' MaturePhase o-right- Action
+
+' CreatureParameter <|-- Health
+' CreatureParameter <|-- Satiety
+
+' CreatureParameter <.up. Parameters : "собирает имена \n производных классов"
+
+' History *-right- State
+
+' Action <|-- PlayerAction
+' Action <|-- CreatureAction
+' Action <|-- NoAction
+
+' PlayerAction <|-- Feed
+' PlayerAction <|-- TeaseHead
+
+' CreatureAction <|-- ChaseTail
+
+
+left to right direction
+
+list <|-right- History
+dict <|-right- DictOfRanges
+
+DictOfRanges <|-right- Kind
+
+Creature o-up- Kind
+Creature o--o CreatureParameter
+Creature o-right-o Action
+Creature o-left- History
+
+
+Kind *-right- MaturePhase
+
+MaturePhase *-right- KindParameter
+MaturePhase o-- Action
+
+CreatureParameter <|-- Health
+CreatureParameter <|-- Satiety
+
+CreatureParameter <.left. Parameters : "собирает имена \n производных классов"
+
+History *-up- State
+
+Action <|-- PlayerAction
+Action <|-- CreatureAction
+Action <|-- NoAction
+
+PlayerAction <|-- Feed
+PlayerAction <|-- TeaseHead
+
+CreatureAction <|-- ChaseTail
+
+@enduml
